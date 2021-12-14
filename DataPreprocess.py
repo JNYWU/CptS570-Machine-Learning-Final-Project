@@ -1,35 +1,32 @@
 #%%
 
 def ReadData():
-    import csv
-    import numpy as np
+    import pandas as pd
         
-    with open('high_diamond_ranked_10min.csv', 'r') as f:
-        data = list(csv.reader(f))
-    
-    data = np.array(data)
+    data = pd.read_csv('high_diamond_ranked_10min.csv')
+    data.head()    
+
     return data
 
 
 def SplitData(data):
-    header = data[0]
-    
-    # data length = 9880
-    # first 60% as training data
-    # next 10% as validation data
+    # data length = 9879
+    # first 70% as training data
     # last 30% as testing data
     
-    # column 1 is Blue Wins, set a y
+    # set Blue Wins as y
     
-    X_train = data[1:5928, 2:]
-    y_train = data[1:5928, 1]
+    from sklearn.preprocessing import MinMaxScaler
+    from sklearn.model_selection import train_test_split
     
-    X_valid = data[5928:6916, 2:]
-    y_valid = data[5928:6916, 1]
+    X = data
+    y = data['blueWins']
+    scaler = MinMaxScaler()
+    scaler.fit(X)
+    X = scaler.transform(X)
     
-    X_test = data[6916:, 2:]
-    y_test = data[6916:, 1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     
-    return X_train, y_train, X_valid, y_valid, X_test, y_test
+    return X_train, y_train, X_test, y_test
     
 # %%
