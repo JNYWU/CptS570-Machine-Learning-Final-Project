@@ -59,9 +59,23 @@ def LogisticRegression():
 
     return accuracy, importance.importances_mean
 
+def RandomForest():
+    from sklearn.ensemble import RandomForestClassifier
+    
+    clf = RandomForestClassifier()
+    clf.fit(X_train, y_train)
+    
+    predict = clf.predict(X_test)
+    accuracy = accuracy_score(predict, y_test)
+    
+    importance = clf.feature_importances_
+    
+    return accuracy, importance
+
 if __name__ == "__main__":
     print("Happy Machine Learning")
     
+<<<<<<< HEAD
     # # decision tree
     # decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
     # print("Decision Tree Accuracy: ", decisionTreeAccuracy)
@@ -78,4 +92,15 @@ if __name__ == "__main__":
     print("Naive Bayes Accuracy: ", logisticRegressionAccuracy)
     plt.bar([x for x in range(len(logisticRegressionImportance))], logisticRegressionImportance)
     plt.show()
+=======
+    # decision tree
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
+    print("Decision Tree Accuracy: ", decisionTreeAccuracy)
+    plt.bar([x for x in range(len(decisionTreeImportance))], decisionTreeImportance)
+    
+    # random forest
+    randomForestAccuracy, randomForestImportance = RandomForest()
+    print("Random Forest Accurcy: ", randomForestAccuracy)
+    plt.bar([x for x in range(len(randomForestImportance))], randomForestImportance)
+>>>>>>> dc188fd405c1a81e273d695458b645a2056b7445
 # %%
