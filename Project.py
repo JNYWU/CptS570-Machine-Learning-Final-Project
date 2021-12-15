@@ -83,7 +83,12 @@ def FindMinIndex(topN, importance, header):
         tempImportance[minIndex] = 10
         
     return minHeader
-    
+
+def Plot(header, importance, title):
+    plt.xticks(rotation=90, ha='center')
+    plt.title(title)
+    plt.bar(header, importance)
+    plt.show()
 
 if __name__ == "__main__":
     print("Happy Machine Learning")
@@ -91,36 +96,26 @@ if __name__ == "__main__":
     # decision tree
     decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
     print("Decision Tree Accuracy: ", decisionTreeAccuracy)
-    plt.xticks(rotation=90, ha='center')
-    plt.bar(header, decisionTreeImportance)
-    plt.show()
+    Plot(header, decisionTreeImportance, "Decision Tree Importance")
     
     # random forest
     randomForestAccuracy, randomForestImportance = RandomForest()
     print("Random Forest Accuracy: ", randomForestAccuracy)
-    plt.xticks(rotation=90, ha='center')
-    plt.bar(header, randomForestImportance)
-    plt.show()
+    Plot(header, randomForestImportance, "Random Forest Importance")
 
     # naive Bayes
     naiveBayesAccuracy, naiveBayesImportance = NaiveBayes()
     print("Naive Bayes Accuracy: ", naiveBayesAccuracy)
-    plt.xticks(rotation=90, ha='center')
-    plt.bar(header, naiveBayesImportance)
-    plt.show()
+    Plot(header, naiveBayesImportance, "Naive Bayes")
 
     # LogisticRegression
     logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression()
     print("Logistic Regression Accuracy: ", logisticRegressionAccuracy)
-    plt.xticks(rotation=90, ha='center')
-    plt.bar(header, logisticRegressionImportance)
-    plt.show()
+    Plot(header, logisticRegressionImportance, "Logistic Regression Importance")
     
     # combine the importances
     combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
-    plt.xticks(rotation=90, ha='center')
-    plt.bar(header, combinedImportance)
-    plt.show()
+    Plot(header, combinedImportance, "Combined Importance")
     
     dropHeader = FindMinIndex(10, combinedImportance, header)
     
