@@ -12,7 +12,7 @@ data = DataPreprocess.ReadData()
 
 X_train, y_train, X_test, y_test, header = DataPreprocess.SplitData(data)
 
-def DecisionTree(X_train, y_train, X_test, y_test):
+def DecisionTree(X_train, y_train):
     from sklearn.tree import DecisionTreeClassifier
     
     # fit the model
@@ -27,7 +27,7 @@ def DecisionTree(X_train, y_train, X_test, y_test):
     
     return accuracy, importance.importances_mean
 
-def NaiveBayes(X_train, y_train, X_test, y_test):
+def NaiveBayes(X_train, y_train):
     from sklearn.naive_bayes import GaussianNB
     
     # fit the model
@@ -42,7 +42,7 @@ def NaiveBayes(X_train, y_train, X_test, y_test):
     
     return accuracy, importance.importances_mean
 
-def LogisticRegression(X_train, y_train, X_test, y_test):
+def LogisticRegression(X_train, y_train):
     from sklearn.linear_model import LogisticRegression
     
     # fit the model
@@ -57,7 +57,7 @@ def LogisticRegression(X_train, y_train, X_test, y_test):
 
     return accuracy, importance.importances_mean
 
-def RandomForest(X_train, y_train, X_test, y_test):
+def RandomForest(X_train, y_train):
     from sklearn.ensemble import RandomForestClassifier
     
     # fit the model
@@ -74,7 +74,6 @@ def RandomForest(X_train, y_train, X_test, y_test):
 
 def FindMinIndex(topN, importance, header):
     tempImportance = importance
-    minIndexValues = []
     minHeader = []
     
     for i in range(topN):
@@ -88,28 +87,34 @@ def Plot(header, importance, title):
     plt.xticks(rotation=90, ha='center')
     plt.title(title)
     plt.bar(header, importance)
-    plt.show()
+    plt.savefig(title, bbox_inches='tight')
+    
+def DropColumns(X_train, y_train, dropCols):
+    droppedData = data.drop(dropCols, axis = 1)
+    dropped_X_train, dropped_y_train, X_test, y_test, droppedHeader = DataPreprocess.SplitData(droppedData)
+    
+    return dropped_X_train, dropped_y_train, droppedHeader
 
 if __name__ == "__main__":
     print("Happy Machine Learning")
     
     # decision tree
-    decisionTreeAccuracy, decisionTreeImportance = DecisionTree(X_train, y_train, X_test, y_test)
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree(X_train, y_train)
     print("Decision Tree Accuracy: ", decisionTreeAccuracy)
     Plot(header, decisionTreeImportance, "Decision Tree Importance")
     
     # random forest
-    randomForestAccuracy, randomForestImportance = RandomForest(X_train, y_train, X_test, y_test)
+    randomForestAccuracy, randomForestImportance = RandomForest(X_train, y_train)
     print("Random Forest Accuracy: ", randomForestAccuracy)
     Plot(header, randomForestImportance, "Random Forest Importance")
 
     # naive Bayes
-    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes(X_train, y_train, X_test, y_test)
+    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes(X_train, y_train)
     print("Naive Bayes Accuracy: ", naiveBayesAccuracy)
     Plot(header, naiveBayesImportance, "Naive Bayes")
 
     # LogisticRegression
-    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression(X_train, y_train, X_test, y_test)
+    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression(X_train, y_train)
     print("Logistic Regression Accuracy: ", logisticRegressionAccuracy)
     Plot(header, logisticRegressionImportance, "Logistic Regression Importance")
     
@@ -117,7 +122,10 @@ if __name__ == "__main__":
     combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
     Plot(header, combinedImportance, "Combined Importance")
     
+    
     dropHeader = FindMinIndex(10, combinedImportance, header)
+    dropped_X_train, dropped_y_train, droppedHeader = DropColumns(X_train, y_train, dropHeader)
+    
     
     
 # %%
