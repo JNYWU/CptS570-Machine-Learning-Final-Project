@@ -84,6 +84,7 @@ def FindMinIndex(topN, importance, header):
     return minHeader
 
 def Plot(header, importance, title):
+    plt.figure()
     plt.xticks(rotation=90, ha='center')
     plt.title(title)
     plt.bar(header, importance)
