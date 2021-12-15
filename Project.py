@@ -87,10 +87,10 @@ def Plot(header, importance, title):
     plt.figure()
     plt.xticks(rotation=90, ha='center')
     plt.title(title)
-    plt.bar(header, importance, sorted(importance, reverse=True))
+    plt.bar(header, importance)
     plt.savefig(title, bbox_inches='tight')
     
-def DropColumns(X_train, y_train, dropCols):
+def DropColumns(dropCols):
     droppedData = data.drop(dropCols, axis = 1)
     dropped_X_train, y_train, dropped_X_test, y_test, droppedHeader = DataPreprocess.SplitData(droppedData)
     
@@ -125,21 +125,13 @@ if __name__ == "__main__":
     initialAccuracy.append(logisticRegressionAccuracy)
     Plot(header, logisticRegressionImportance, "Logistic Regression Importance")
     
-    # plot accuracy
-    xAxis = ["Decision Tree", "Random Forest", "Naive Bayes", "Logistic Regression"]
-    plt.figure()
-    plt.xticks(rotation=90, ha='center')
-    plt.title("Initial Accuracy")
-    plt.bar(xAxis, initialAccuracy)
-    plt.savefig("Initial Accuracy", bbox_inches='tight')
-    
     # combine the importances
     combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
     Plot(header, combinedImportance, "Combined Importance")
     
     # drop the 10 least important feature
     dropHeader = FindMinIndex(10, combinedImportance, header)
-    dropped_X_train, dropped_X_test, droppedHeader = DropColumns(X_train, y_train, dropHeader)
+    dropped_X_train, dropped_X_test, droppedHeader = DropColumns(dropHeader)
     
     droppedAccuracy = []
     
@@ -171,13 +163,50 @@ if __name__ == "__main__":
     combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
     Plot(droppedHeader, combinedImportance, "Dropped Combined Importance")
     
+    # drop the 6 least important feature
+    dropHeader2 = FindMinIndex(6, combinedImportance, droppedHeader)
+    dropHeader2 = dropHeader + dropHeader2
+    dropped2_X_train, dropped2_X_test, droppedHeader2 = DropColumns(dropHeader2)
     
-    # plot dropped accuracy
+    droppedAccuracy2 = []
+    
+    # decision tree
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree(dropped2_X_train, dropped2_X_test)
+    print("2nd Round Dropped Decision Tree Accuracy: ", decisionTreeAccuracy)
+    droppedAccuracy2.append(decisionTreeAccuracy)
+    Plot(droppedHeader2, decisionTreeImportance, "Dropped Decision Tree Importance 2")
+    
+    # random forest
+    randomForestAccuracy, randomForestImportance = RandomForest(dropped2_X_train, dropped2_X_test)
+    print("2nd Round Dropped Random Forest Accuracy: ", randomForestAccuracy)
+    droppedAccuracy2.append(randomForestAccuracy)
+    Plot(droppedHeader2, randomForestImportance, "Dropped Random Forest Importance 2")
+
+    # naive Bayes
+    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes(dropped2_X_train, dropped2_X_test)
+    print("2nd Round Dropped Naive Bayes Accuracy: ", naiveBayesAccuracy)
+    droppedAccuracy2.append(naiveBayesAccuracy)
+    Plot(droppedHeader2, naiveBayesImportance, "Dropped Naive Bayes 2")
+
+    # LogisticRegression
+    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression(dropped2_X_train, dropped2_X_test)
+    print("2nd Round Dropped Logistic Regression Accuracy: ", logisticRegressionAccuracy)
+    droppedAccuracy2.append(logisticRegressionAccuracy)
+    Plot(droppedHeader2, logisticRegressionImportance, "Dropped Logistic Regression Importance 2")
+    
+    # plot accuracy
+    xAxis = ["Decision Tree", "Random Forest", "Naive Bayes", "Logistic Regression"]
     plt.figure()
     plt.xticks(rotation=90, ha='center')
-    plt.title("Dropped Accuracy")
-    plt.bar(xAxis, droppedAccuracy)
-    plt.savefig("Dropped Accuracy", bbox_inches='tight')
+    plt.title("Accuracy")
+    plt.plot(xAxis, initialAccuracy, 'v', color='blue', label='Initial')
+    plt.plot(xAxis, droppedAccuracy, 'v', color='red', label='Drop 10')
+    plt.plot(xAxis, droppedAccuracy2, 'v', color='green', label='Drop 16')
+    plt.legend()
+    
+    plt.savefig("Accuracy", bbox_inches='tight')
+    
+    
     
     
 # %%
