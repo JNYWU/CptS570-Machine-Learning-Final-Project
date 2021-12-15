@@ -12,7 +12,7 @@ data = DataPreprocess.ReadData()
 
 X_train, y_train, X_test, y_test, header = DataPreprocess.SplitData(data)
 
-def DecisionTree():
+def DecisionTree(X_train, y_train, X_test, y_test):
     from sklearn.tree import DecisionTreeClassifier
     
     # fit the model
@@ -27,7 +27,7 @@ def DecisionTree():
     
     return accuracy, importance.importances_mean
 
-def NaiveBayes():
+def NaiveBayes(X_train, y_train, X_test, y_test):
     from sklearn.naive_bayes import GaussianNB
     
     # fit the model
@@ -42,7 +42,7 @@ def NaiveBayes():
     
     return accuracy, importance.importances_mean
 
-def LogisticRegression():
+def LogisticRegression(X_train, y_train, X_test, y_test):
     from sklearn.linear_model import LogisticRegression
     
     # fit the model
@@ -57,7 +57,7 @@ def LogisticRegression():
 
     return accuracy, importance.importances_mean
 
-def RandomForest():
+def RandomForest(X_train, y_train, X_test, y_test):
     from sklearn.ensemble import RandomForestClassifier
     
     # fit the model
@@ -94,22 +94,22 @@ if __name__ == "__main__":
     print("Happy Machine Learning")
     
     # decision tree
-    decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree(X_train, y_train, X_test, y_test)
     print("Decision Tree Accuracy: ", decisionTreeAccuracy)
     Plot(header, decisionTreeImportance, "Decision Tree Importance")
     
     # random forest
-    randomForestAccuracy, randomForestImportance = RandomForest()
+    randomForestAccuracy, randomForestImportance = RandomForest(X_train, y_train, X_test, y_test)
     print("Random Forest Accuracy: ", randomForestAccuracy)
     Plot(header, randomForestImportance, "Random Forest Importance")
 
     # naive Bayes
-    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes()
+    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes(X_train, y_train, X_test, y_test)
     print("Naive Bayes Accuracy: ", naiveBayesAccuracy)
     Plot(header, naiveBayesImportance, "Naive Bayes")
 
     # LogisticRegression
-    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression()
+    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression(X_train, y_train, X_test, y_test)
     print("Logistic Regression Accuracy: ", logisticRegressionAccuracy)
     Plot(header, logisticRegressionImportance, "Logistic Regression Importance")
     
