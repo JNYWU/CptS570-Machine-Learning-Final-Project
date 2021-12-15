@@ -19,8 +19,12 @@ def SplitData(data):
     from sklearn.preprocessing import MinMaxScaler
     from sklearn.model_selection import train_test_split
     
-    X = data
+    dropCols = ['gameId', 'blueWins', 'redGoldPerMin', 'blueGoldPerMin', 'redCSPerMin', 'blueCSPerMin']
+    cleanData = data.drop(dropCols, axis = 1)
+    
+    X = cleanData
     y = data['blueWins']
+    
     scaler = MinMaxScaler()
     scaler.fit(X)
     X = scaler.transform(X)
