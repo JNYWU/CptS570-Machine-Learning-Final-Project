@@ -96,8 +96,52 @@ def DropColumns(dropCols):
     
     return dropped_X_train, dropped_X_test, droppedHeader
 
+# normalize to 1-2
+def Normalization(accuracy):
+    return (accuracy - min(accuracy)) / (max(accuracy) - min(accuracy)) + 1
+
+
 if __name__ == "__main__":
     print("Happy Machine Learning")
+
+    #----------------------------------------------------------------------
+    # Run with original full data
+    
+    origin_X_train, origin_y_train, origin_X_test, origin_y_test, origin_header = DataPreprocess.SplitDataOnly(data)
+    originAccuracy = []
+    
+    # decision tree
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree(origin_X_train, origin_X_test)
+    print("Original Decision Tree Accuracy: ", decisionTreeAccuracy)
+    originAccuracy.append(decisionTreeAccuracy)
+    Plot(origin_header, decisionTreeImportance, "Original Decision Tree Importance")
+    
+    # random forest
+    randomForestAccuracy, randomForestImportance = RandomForest(origin_X_train, origin_X_test)
+    print("Original Random Forest Accuracy: ", randomForestAccuracy)
+    originAccuracy.append(randomForestAccuracy)
+    Plot(origin_header, randomForestImportance, "Original Random Forest Importance")
+
+    # naive Bayes
+    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes(origin_X_train, origin_X_test)
+    print("Original Naive Bayes Accuracy: ", naiveBayesAccuracy)
+    originAccuracy.append(naiveBayesAccuracy)
+    Plot(origin_header, naiveBayesImportance, "Original Naive Bayes")
+
+    # LogisticRegression
+    logisticRegressionAccuracy, logisticRegressionImportance = LogisticRegression(origin_X_train, origin_X_test)
+    print("Original Logistic Regression Accuracy: ", logisticRegressionAccuracy)
+    originAccuracy.append(logisticRegressionAccuracy)
+    Plot(origin_header, logisticRegressionImportance, "Original Logistic Regression Importance")
+    
+    normalizedOriAcc = Normalization(originAccuracy)
+    # combine the importances with normalized accuracy
+    combinedImportance = normalizedOriAcc[0] * decisionTreeImportance + normalizedOriAcc[1] * randomForestImportance \
+        + normalizedOriAcc[2] * naiveBayesImportance + normalizedOriAcc[3] * logisticRegressionImportance
+    Plot(origin_header, combinedImportance, "Original Combined Importance")
+    
+    #----------------------------------------------------------------------
+    # drop unnecessary data 
     
     initialAccuracy = []
     
@@ -125,10 +169,14 @@ if __name__ == "__main__":
     initialAccuracy.append(logisticRegressionAccuracy)
     Plot(header, logisticRegressionImportance, "Logistic Regression Importance")
     
-    # combine the importances
-    combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
-    Plot(header, combinedImportance, "Combined Importance")
+    normalizedIniAcc = Normalization(initialAccuracy)
+    # combine the importances with normalized accuracy
+    combinedImportance = normalizedIniAcc[0] * decisionTreeImportance + normalizedIniAcc[1] * randomForestImportance \
+        + normalizedIniAcc[2] * naiveBayesImportance + normalizedIniAcc[3] * logisticRegressionImportance
+    Plot(header, combinedImportance, "Dropped Combined Importance")
     
+    #----------------------------------------------------------------------
+    # Second round
     # drop the 10 least important feature
     dropHeader = FindMinIndex(10, combinedImportance, header)
     dropped_X_train, dropped_X_test, droppedHeader = DropColumns(dropHeader)
@@ -159,11 +207,15 @@ if __name__ == "__main__":
     droppedAccuracy.append(logisticRegressionAccuracy)
     Plot(droppedHeader, logisticRegressionImportance, "Dropped Logistic Regression Importance")
     
-    # combine the importances
-    combinedImportance = decisionTreeImportance + randomForestImportance + naiveBayesImportance + logisticRegressionImportance
+    normalizedDropAcc = Normalization(droppedAccuracy)
+    # combine the importances with normalized accuracy
+    combinedImportance = normalizedDropAcc[0] * decisionTreeImportance + normalizedDropAcc[1] * randomForestImportance \
+        + normalizedDropAcc[2] * naiveBayesImportance + normalizedDropAcc[3] * logisticRegressionImportance
     Plot(droppedHeader, combinedImportance, "Dropped Combined Importance")
     
-    # drop the 6 least important feature
+    #----------------------------------------------------------------------
+    # Third round
+    # drop another 6 least important feature
     dropHeader2 = FindMinIndex(6, combinedImportance, droppedHeader)
     dropHeader2 = dropHeader + dropHeader2
     dropped2_X_train, dropped2_X_test, droppedHeader2 = DropColumns(dropHeader2)
@@ -194,11 +246,19 @@ if __name__ == "__main__":
     droppedAccuracy2.append(logisticRegressionAccuracy)
     Plot(droppedHeader2, logisticRegressionImportance, "Dropped Logistic Regression Importance 2")
     
+    normalizedDrop2Acc = Normalization(droppedAccuracy2)
+    # combine the importances with normalized accuracy
+    combinedImportance = normalizedDrop2Acc[0] * decisionTreeImportance + normalizedDrop2Acc[1] * randomForestImportance \
+        + normalizedDrop2Acc[2] * naiveBayesImportance + normalizedDrop2Acc[3] * logisticRegressionImportance
+    Plot(droppedHeader2, combinedImportance, "Dropped Combined Importance 2")
+    
+    #----------------------------------------------------------------------
     # plot accuracy
     xAxis = ["Decision Tree", "Random Forest", "Naive Bayes", "Logistic Regression"]
     plt.figure()
     plt.xticks(rotation=90, ha='center')
     plt.title("Accuracy")
+    plt.plot(xAxis, originAccuracy, 'v', color='black', label='Original')
     plt.plot(xAxis, initialAccuracy, 'v', color='blue', label='Initial')
     plt.plot(xAxis, droppedAccuracy, 'v', color='red', label='Drop 10')
     plt.plot(xAxis, droppedAccuracy2, 'v', color='green', label='Drop 16')
