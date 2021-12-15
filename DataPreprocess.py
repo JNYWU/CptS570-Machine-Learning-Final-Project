@@ -23,6 +23,7 @@ def SplitData(data):
     cleanData = data.drop(dropCols, axis = 1)
     
     X = cleanData
+    header = list(X)
     y = data['blueWins']
     
     scaler = MinMaxScaler()
@@ -31,6 +32,6 @@ def SplitData(data):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     
-    return X_train, y_train, X_test, y_test
+    return X_train, y_train, X_test, y_test, header
     
 # %%
