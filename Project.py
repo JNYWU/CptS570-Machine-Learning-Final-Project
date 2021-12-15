@@ -75,32 +75,20 @@ def RandomForest():
 if __name__ == "__main__":
     print("Happy Machine Learning")
     
-<<<<<<< HEAD
-    # # decision tree
-    # decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
-    # print("Decision Tree Accuracy: ", decisionTreeAccuracy)
-    # plt.bar([x for x in range(len(decisionTreeImportance))], decisionTreeImportance)
+    # decision tree
+    decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
+    print("Decision Tree Accuracy: ", decisionTreeAccuracy)
+    plt.bar([x for x in range(len(decisionTreeImportance))], decisionTreeImportance)
 
-    # # naive Bayes
-    # naiveBayesAccuracy, naiveBayesImportance = NaiveBayes()
-    # print("Naive Bayes Accuracy: ", naiveBayesAccuracy)
-    # plt.bar([x for x in range(len(naiveBayesImportance))], naiveBayesImportance)
-    # plt.show()
+    # naive Bayes
+    naiveBayesAccuracy, naiveBayesImportance = NaiveBayes()
+    print("Naive Bayes Accuracy: ", naiveBayesAccuracy)
+    plt.bar([x for x in range(len(naiveBayesImportance))], naiveBayesImportance)
+    plt.show()
 
     # LogisticRegression
     logisticRegressionAccuracy, logisticRegressionImportance = NaiveBayes()
     print("Naive Bayes Accuracy: ", logisticRegressionAccuracy)
     plt.bar([x for x in range(len(logisticRegressionImportance))], logisticRegressionImportance)
     plt.show()
-=======
-    # decision tree
-    decisionTreeAccuracy, decisionTreeImportance = DecisionTree()
-    print("Decision Tree Accuracy: ", decisionTreeAccuracy)
-    plt.bar([x for x in range(len(decisionTreeImportance))], decisionTreeImportance)
-    
-    # random forest
-    randomForestAccuracy, randomForestImportance = RandomForest()
-    print("Random Forest Accurcy: ", randomForestAccuracy)
-    plt.bar([x for x in range(len(randomForestImportance))], randomForestImportance)
->>>>>>> dc188fd405c1a81e273d695458b645a2056b7445
 # %%
